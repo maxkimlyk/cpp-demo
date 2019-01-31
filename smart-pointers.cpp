@@ -1,5 +1,5 @@
 #include <memory>
-#include <iostream>
+#include "common.h"
 
 struct SomeClass
 {
@@ -14,7 +14,7 @@ struct SomeClass
     }
 };
 
-void unique_ptr_example()
+DEMO(unique_ptr_demo)
 {
     // creating
     std::unique_ptr<SomeClass> up1(new SomeClass(/* constr args */));
@@ -31,12 +31,25 @@ void unique_ptr_example()
     // get usual pointer
     SomeClass* ptr = up2.get();
 
+    // array
+    std::unique_ptr<SomeClass[]> up_to_array(new SomeClass[2]);
+
     // custom deleter
-    std::unique_ptr<SomeClass[]> up_to_array(new SomeClass[3]);
+    auto custom_delete_func = [](int*) { std::cout << "custom_delete_func\n"; };
+    std::unique_ptr<int, std::function<void(int*)>> up3(new int(1), custom_delete_func);
+
+    // function return unique_ptr
+    auto func = []() { return std::make_unique<int>(10); };
+    auto up4 = func(); // moving here
 }
 
-int main()
+DEMO(shared_ptr_demo)
 {
-    unique_ptr_example();
-    return 0;
+    // creating
+    std::shared_ptr<SomeClass> sp1(new SomeClass(/* constr args */));
+    auto sp2 = std::make_shared<SomeClass>(/* constr args */);
+
+    auto copy = sp2; // copying is allowed
 }
+
+RUN_DEMOS
