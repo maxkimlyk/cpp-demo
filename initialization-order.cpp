@@ -38,10 +38,11 @@ struct RightOrder : public Base1, public Base2
 
 DEMO(initialization_order)
 {
-    // Initialization order is the order that members declared in class,
-    // but the order that members are listed arter ":" in constructor!
-    // First base objects are initialized (in order they listed),
-    // then members (in order they listed).
+    // Initialization order is the same as the order that members declared in class,
+    // but not the order that members are listed arter ":" in constructor!
+
+    // First base objects are initialized (in order they are listed),
+    // then members (in order they are listed).
 
     BadOrder bad_order(5);
     std::cout << "bad_order.a = " << bad_order.a << "\n";
