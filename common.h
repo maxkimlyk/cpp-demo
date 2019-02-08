@@ -21,14 +21,14 @@ struct __demo_base__
 };
 
 #define DEMO(name) \
-    struct name : public __demo_base__    \
+    struct __##name##_demo__ : public __demo_base__    \
     {                                     \
-        name() : __demo_base__(#name) {}  \
+        __##name##_demo__() : __demo_base__(#name) {}  \
                                           \
         void operator()() const override; \
     } __##name##_inst__;                  \
                                           \
-    void name::operator()() const
+    void __##name##_demo__::operator()() const
 
 #define RUN_DEMOS \
     int main()                                                     \
