@@ -25,7 +25,7 @@ using make_integer_sequence = typename make_integer_sequence_impl<T, N-1>::type;
 template <class T, class Func, size_t... IndexSeq>
 std::array<T, sizeof...(IndexSeq)> construct_array_impl(Func func, integer_sequence<size_t, IndexSeq...>)
 //                                                                             ^
-//              fictive parameter, just to make constraint to `size_t... IndexSeq` be integer sequence
+//                             fictive parameter, just to pass `size_t... IndexSeq` in template parameters
 {
     return {func(IndexSeq)...}; // using initializer list
 }
