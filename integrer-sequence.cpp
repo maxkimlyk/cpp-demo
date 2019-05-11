@@ -1,4 +1,4 @@
-#include "common.h"
+#include "demo-common.h"
 #include <array>
 
 // This is integer_sequence structure. Structure is empty,

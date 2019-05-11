@@ -1,4 +1,4 @@
-#include "common.h"
+#include "demo-common.h"
 
 // Inherit from each of passed lambdas.
 template<class... Ts>

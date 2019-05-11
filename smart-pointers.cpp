@@ -1,5 +1,5 @@
 #include <memory>
-#include "common.h"
+#include "demo-common.h"
 
 struct SomeClass
 {

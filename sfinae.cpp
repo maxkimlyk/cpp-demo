@@ -1,9 +1,4 @@
-#include "common.h"
-
-namespace detail
-{
-
-}
+#include "demo-common.h"
 
 template<class T>
 struct can_be_dereferenced

@@ -1,4 +1,4 @@
-#include "common.h"
+#include "demo-common.h"
 
 int        foo1() { return 1; }
 int&       foo2() { static int val = 2; return val; }
@@ -69,7 +69,7 @@ DEMO(decltype)
 
     // decltype(auto) var = expr; is equivalent to decltype(expr)
 
-    decltype(auto) var13 = foo1(); // int 
+    decltype(auto) var13 = foo1(); // int
     decltype(auto) var14 = foo2(); // int&
     decltype(auto) var15 = foo3(); // int
     decltype(auto) var16 = foo4(); // const int

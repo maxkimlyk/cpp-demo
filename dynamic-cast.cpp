@@ -1,4 +1,4 @@
-#include "common.h"
+#include "demo-common.h"
 
 struct Base
 {
@@ -36,7 +36,7 @@ DEMO(dynamic_cast_demo)
     catch (std::bad_cast e)
     {
         std::cout << e.what() << "\n";
-    }    
+    }
 }
 
 RUN_DEMOS
