@@ -5,6 +5,28 @@
 #include <shared_mutex>
 #include <thread>
 
+DEMO(thread)
+{
+    // std::thread - объект, представляющий поток.
+
+    const auto task = []() {
+        std::cout << "new thread\n";
+    };
+
+    std::thread thread1(task);
+    std::thread thread2(task);
+
+    // std::thread поддерживает перемещение, копирование запрещено
+    std::thread thread3(std::move(thread1));
+
+    thread2.join(); // ожидает, пока поток закончит свое выполнение
+
+    thread3.detach(); // позволяет потоку выполняться независимо, делать join больше не нужно
+
+    size_t n = std::thread::hardware_concurrency(); // количество физически поддерживаемых потоков
+    std::cout << n << " concurrent threads are supported\n";
+}
+
 DEMO(mutex)
 {
     size_t count = 0;
@@ -43,41 +65,38 @@ DEMO(unique_lock)
     std::lock(lock2, lock3); // блокирует оба лока
 }
 
-/*DEMO(shared_mutex)
+DEMO(shared_mutex)
 {
     // std::shared_mutex поддерживает два режима блокировки
     // * для чтения - через std::shared_lock или метод lock_shared
     // * для изменения - через std::unique_lock или метод lock
 
-    size_t count = 0;
     std::shared_mutex mutex;
 
-    const size_t count_max = 10;
-
-    const auto changer = [&]() {
-        for (size_t i = 0; i < count_max; ++i)
-        {
-            std::unique_lock lock(mutex);
-            count++;
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        }
+    const auto writer = [&]() {
+        std::unique_lock lock(mutex);
+        std::cout << "Writer: lock\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::cout << "Writer: free\n";
     };
 
-    const auto printer = [&]() {
-        while (count != count_max)
-        {
-            std::shared_lock locK(mutex);
-            std::cout << "current count: " << count << "\n";
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
+    const auto reader = [&](int number) {
+        std::shared_lock locK(mutex);
+        std::cout << "Reader #" << number << ": lock\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::cout << "Reader #" << number << ": free\n";
     };
 
-    std::thread thread1(changer);
-    std::thread thread2(printer);
+    std::thread writer_thread(writer);
 
-    thread1.join();
-    thread2.join();
-}*/
+    std::vector<std::thread> reader_threads;
+    for (size_t i = 0; i < 3; ++i)
+        reader_threads.emplace_back(reader, i);
+
+    writer_thread.join();
+    for (auto& thread : reader_threads)
+        thread.join();
+}
 
 DEMO(sleep)
 {
