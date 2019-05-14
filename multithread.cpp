@@ -1,6 +1,7 @@
 #include "demo-common.h"
 
 #include <atomic>
+#include <condition_variable>
 #include <future>
 #include <mutex>
 #include <shared_mutex>
@@ -183,6 +184,77 @@ DEMO(atomic)
         thread.join();
 
     std::cout << count << "\n";
+}
+
+DEMO(condition_variable)
+{
+    // std::condition_variable позволяет заблокировать работу потока,
+    // пока не будет получен сигнал из управляющего потока.
+
+    // Поток, желающий изменить переменную должен:
+    // 1) заблокировать std::mutex
+    // 2) произвести изменения, пока std::mutex заблокирован
+    // 3) вызвать notify_one или notify_all
+
+    // Поток, ждущий на условной переменной должен:
+    // 1) заблокировать std::mutex через std::unique_lock<std::mutex>
+    // 2) вызвать wait, wait_for или wait_until. Эти операции заставляют поток заснуть до того,
+    //    как в другом потоке будет вызван notify_one или notify_all или произойдет ложное срабатывание
+    // 3) когда поток проснется, мьютекс будет автоматически заблокирован
+
+    bool worker_notified = false;
+    bool main_thread_notified = false;
+
+    std::condition_variable cv;
+    std::mutex mutex;
+
+    int count = 0;
+
+    const auto worker_task = [&](){
+        std::cout << "Worker thread starts\n";
+
+        std::unique_lock lock(mutex);
+
+        // Второй аргумент - защита от ложных срабатываний.
+        // Переданная функция должна вернуть true, если срабатывание верно.
+        cv.wait(lock, [&]{return worker_notified;});
+
+        std::cout << "Worker got signal and starts work\n";
+
+        // После выхода из wait lock уже заблокирован
+        count = count * 2 + 1;
+
+        std::cout << "Worker ends work\n";
+
+        main_thread_notified = true;
+        cv.notify_all(); // посылает уведомление всем ждущим потокам
+    };
+
+    std::thread worker(worker_task);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+
+    std::cout << "Main thread starts work\n";
+
+    {
+        std::lock_guard lock(mutex);
+        count = 100;
+        worker_notified = true;
+    }
+
+    std::cout << "Main thread ends work\n";
+
+    cv.notify_one(); // посылает уведомление одному любому ждущему потоку
+
+    // Ожидание результата от worker
+    {
+        std::unique_lock lock(mutex);
+        cv.wait(lock, [&]{return main_thread_notified;});
+        std::cout << "Main thread got signal\n";
+        std::cout << "Result: " << count << "\n";
+    }
+
+    worker.join();
 }
 
 RUN_DEMOS
