@@ -1,5 +1,6 @@
 #include "demo-common.h"
 
+#include <atomic>
 #include <future>
 #include <mutex>
 #include <shared_mutex>
@@ -158,6 +159,30 @@ DEMO(async)
     std::cout << "future1: " << future1.get() << "\n";
     std::cout << "future2: " << future2.get() << "\n";
     std::cout << "future3: " << future3.get() << "\n";
+}
+
+DEMO(atomic)
+{
+    // std::atomic позволяет создать атомарную переменную. Поддерживаются
+    // * все целочисленные типы
+    // * все указатели
+    // * bool
+
+    std::atomic<size_t> count = 0;
+
+    const auto task = [&count]() {
+        for (size_t i = 0; i < 10000; ++i)
+            count++;
+    };
+
+    std::vector<std::thread> threads;
+    for (size_t i = 0; i < 6; ++i)
+        threads.emplace_back(task);
+
+    for (auto& thread : threads)
+        thread.join();
+
+    std::cout << count << "\n";
 }
 
 RUN_DEMOS
