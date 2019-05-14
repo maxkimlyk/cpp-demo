@@ -1,6 +1,39 @@
 #include "demo-common.h"
 #include <utility>
 
+/* === Reference collapsing rules (C++11) ===
+ *   (T&)&   => T&
+ *   (T&&)&  => T&
+ *   (T&)&&  => T&
+ *   (T&&)&& => T&&
+ */
+
+namespace mystd
+{
+template<class T>
+constexpr T&& forward(std::remove_reference_t<T>&& arg) noexcept
+{
+    return static_cast<T&&>(arg);
+}
+}
+
+
+template<class T>
+void relay(T&& arg)
+{
+}
+
+DEMO(universal_reference)
+{
+    // T&& variable initialized with rvalue => rvalue reference
+    relay(5); // T = int&&,  T&& = (int&&)&& = int&&
+
+    // T&& variable initialized with lvalue => lvalue reference
+    int x = 0;
+    relay(x); // T = int&, T&& = (int&)&& = int&
+}
+
+
 class Class
 {
 public:
