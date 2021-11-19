@@ -3,14 +3,14 @@
 #include <string_view>
 #include <string>
 
-#include <boost/algorithm/algorithm.hpp>
 #include <boost/algorithm/searching/boyer_moore.hpp>
 #include <boost/algorithm/searching/boyer_moore_horspool.hpp>
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
+#include <boost/algorithm/clamp.hpp>
 
 DEMO(searching)
 {
-    // finds string in text
+    // find string in text
 
     const std::string_view text = "There are only two kinds of languages: "
                                   "the ones people complain about and the ones nobody uses";
@@ -33,6 +33,18 @@ DEMO(searching)
 
     const auto [kmp_from, kmp_to] = boost::algorithm::knuth_morris_pratt_search(text.begin(), text.end(), pattern.begin(), pattern.end());
     std::cout << "knuth_morris_pratt_search: " << make_report(kmp_from, kmp_to) << std::endl;
+}
+
+DEMO(clamp)
+{
+    // clamp value between a pair of boundaries
+    std::cout << "clamp(5.6, 10.0, 20.0) = " << boost::algorithm::clamp(5.6, 10.0, 20.0) << std::endl;
+    std::cout << "clamp(11.2, 10.0, 20.0) = " << boost::algorithm::clamp(11.2, 10.0, 20.0) << std::endl;
+    std::cout << "clamp(55.0, 10.0, 20.0) = " << boost::algorithm::clamp(55.0, 10.0, 20.0) << std::endl;
+
+    std::vector<int> values = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::cout << std::endl << "clamped range: ";
+    boost::algorithm::clamp_range(values, std::ostream_iterator<int>(std::cout, ", "), 3, 7);
 }
 
 RUN_DEMOS
