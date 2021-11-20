@@ -7,6 +7,7 @@
 #include <boost/algorithm/searching/boyer_moore_horspool.hpp>
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
 #include <boost/algorithm/clamp.hpp>
+#include <boost/algorithm/gather.hpp>
 
 DEMO(searching)
 {
@@ -45,6 +46,23 @@ DEMO(clamp)
     std::vector<int> values = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::cout << std::endl << "clamped range: ";
     boost::algorithm::clamp_range(values, std::ostream_iterator<int>(std::cout, ", "), 3, 7);
+    std::cout << std::endl;
 }
+
+DEMO(gather)
+{
+    // gathers elements that satisfy predicate around pivot
+    std::vector<int> values = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+    const auto is_odd = [](int v) { return v % 2 == 1; };
+    auto pivot_iter = std::find(values.begin(), values.end(), 5);
+    boost::algorithm::gather(values.begin(), values.end(), values.begin() + 5, is_odd);
+
+    std::cout << "Gathered odds around " << *pivot_iter << ": ";
+    std::copy(values.begin(), values.end(), std::ostream_iterator<int>(std::cout, ", "));
+    std::cout << std::endl;
+}
+
+
 
 RUN_DEMOS
