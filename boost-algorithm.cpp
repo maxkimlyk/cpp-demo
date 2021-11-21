@@ -8,6 +8,7 @@
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/algorithm/gather.hpp>
+#include <boost/algorithm/hex.hpp>
 
 DEMO(searching)
 {
@@ -63,6 +64,21 @@ DEMO(gather)
     std::cout << std::endl;
 }
 
+DEMO(hex)
+{
+    // convert values to hex representation (unhex does backward operation)
 
+    struct foo
+    {
+        int a = 10;
+        float b = 1.0f;
+    };
+
+    foo value;
+    const char* p = reinterpret_cast<char*>(&value);
+    boost::algorithm::hex(p, p + sizeof(foo), std::ostream_iterator<char>{std::cout, ""});
+
+    std::cout << std::endl << "^-int---^float--";
+}
 
 RUN_DEMOS
