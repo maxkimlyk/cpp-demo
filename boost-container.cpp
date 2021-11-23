@@ -4,6 +4,7 @@
 
 #include <boost/container/stable_vector.hpp>
 #include <boost/container/flat_set.hpp>
+#include <boost/container/slist.hpp>
 
 DEMO(stable_vector)
 {
@@ -58,6 +59,24 @@ DEMO(flat_set_map) {
 
   std::cout << "set: ";
   std::copy(set.begin(), set.end(), std::ostream_iterator<int>(std::cout, ", "));
+}
+
+DEMO(slist) {
+  // slist is a singly linked list. Slist is a bit different than std::forward_list.
+  // * std::forward_list doesn't have size() method but allows
+  //   merging different lists via splice after in constant time
+  // * slist tracks its size
+
+  boost::container::slist<int> list = {1, 2, 3, 4, 5};
+
+  std::cout << "list.size(): " << list.size(); // O(1)
+  std::cout << std::endl;
+
+  boost::container::slist<int> another_list = {9, 9, 9};
+  list.splice_after(list.begin(), another_list); // O(size(another_list))
+
+  std::cout << "list: ";
+  std::copy(list.begin(), list.end(), std::ostream_iterator<int>(std::cout, ", "));
 }
 
 RUN_DEMOS
