@@ -6,6 +6,7 @@
 #include <boost/container/flat_set.hpp>
 #include <boost/container/slist.hpp>
 #include <boost/container/static_vector.hpp>
+#include <boost/container/small_vector.hpp>
 
 DEMO(stable_vector)
 {
@@ -103,7 +104,42 @@ DEMO(static_vector)
     static_v.pop_back();
 
     std::cout << "static_v: ";
-    std::transform(static_v.begin(), static_v.end(), std::ostream_iterator<int>(std::cout, ", "), [](const auto obj) { return obj.v;});
+    std::transform(static_v.begin(), static_v.end(), std::ostream_iterator<int>(std::cout, ", "), [](const auto obj) { return obj.value; });
+}
+
+template <class T>
+class VerboseAllocator : public std::allocator<T>
+{
+public:
+    T* allocate(std::size_t n)
+    {
+        std::cout << "alocating " << n * sizeof(T) << " bytes" << std::endl;
+        return std::allocator<T>::allocate(n);
+    }
+};
+
+DEMO(small_vector)
+{
+    // small_vector contains some pre-allocated space for a few elements
+    // but can be increased unlike static_vector
+
+    constexpr size_t kPreallocSize = 4;
+    boost::container::small_vector<int, kPreallocSize, VerboseAllocator<int>> vec;
+
+    for (size_t i = 0; i < 8; ++i)
+    {
+        vec.push_back(i);
+        std::cout << "pushed " << i << std::endl;
+    }
+
+    // it can be passed as small_vector_base in order not to pass template parameter of preallocated size
+    const auto print_func = [](const boost::container::small_vector_base<int, VerboseAllocator<int>>& param) {
+        std::cout << "vector contains: ";
+        std::copy(param.begin(), param.end(), std::ostream_iterator<int>(std::cout, ", "));
+        std::cout << std::endl;
+    };
+
+    print_func(vec);
 }
 
 RUN_DEMOS
