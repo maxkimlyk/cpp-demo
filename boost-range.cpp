@@ -17,6 +17,10 @@
 #include <boost/range/adaptor/tokenized.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/adaptor/uniqued.hpp>
+#include <boost/range/algorithm/sort.hpp>
+#include <boost/range/algorithm/unique.hpp>
+#include <boost/range/algorithm_ext/erase.hpp>
+#include <boost/range/any_range.hpp>
 
 #include <deque>
 #include <iostream>
@@ -200,6 +204,57 @@ DEMO(join)
     const auto joined1 = boost::join(deq, vec);
 
     joined1 | print_to_cout;
+}
+
+DEMO(algotirhm_unique) {
+    const std::vector<int> original = {1, 1, 5, 5, 5, 4, 3};
+
+    std::vector<int> vec = original;
+    const auto unique_range = boost::unique(vec);
+
+    std::cout << "unique_range: ";
+    unique_range | print_to_cout;
+    std::cout << std::endl;
+
+    std::cout << "what actually vec holds: ";
+    vec | print_to_cout;
+    std::cout << std::endl;
+
+    vec = original;
+    auto iter = boost::unique<boost::return_found>(vec);
+    std::cout << "by found iter: ";
+    std::copy(vec.begin(), iter, std::ostream_iterator<int>(std::cout, ","));
+    std::cout << std::endl;
+
+    vec = original;
+    const auto begin_next_range = boost::unique<boost::return_begin_next>(vec);
+    std::cout << "begin-next: ";
+    begin_next_range | print_to_cout;
+    std::cout << std::endl;
+
+    vec = original;
+    const auto found_end_range = boost::unique<boost::return_found_end>(vec);
+    std::cout << "found-end: ";
+    found_end_range | print_to_cout;
+    std::cout << std::endl;
+
+    // the return policy may be helpful in cases like this: delete duplicates
+    boost::erase(vec, boost::unique<boost::return_found_end>(boost::sort(vec)));
+}
+
+DEMO(any_range) {
+    // any_range car represent vectors, lists or other range objects
+
+    using int_range = boost::any_range<int, boost::bidirectional_traversal_tag>;
+
+    const std::vector<int> vec = {1, 2, 3, 4};
+    const std::list<int> list = {5, 6, 7, 8};
+
+    int_range rng = vec;
+    rng | print_to_cout;
+
+    rng = list;
+    rng | print_to_cout;
 }
 
 RUN_DEMOS
