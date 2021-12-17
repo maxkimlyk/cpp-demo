@@ -21,6 +21,9 @@
 #include <boost/range/algorithm/unique.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/range/any_range.hpp>
+#include <boost/range/counting_range.hpp>
+#include <boost/range/istream_range.hpp>
+#include <boost/range/irange.hpp>
 
 #include <deque>
 #include <iostream>
@@ -254,6 +257,32 @@ DEMO(any_range) {
     rng | print_to_cout;
 
     rng = list;
+    rng | print_to_cout;
+}
+
+DEMO(counting_range) {
+    // counting_range generates incrementing values
+    auto rng = boost::counting_range(1, 5);
+    rng | print_to_cout;
+}
+
+DEMO(istream_range) {
+    // istream_range wraps istream_iterator
+
+    const std::string text = "1 88 sts text word  d 87 ";
+    std::istringstream stream(text);
+    auto rng = boost::istream_range<int>(stream);
+    rng | print_to_cout;
+}
+
+DEMO(irange) {
+    // irange generates integer range
+
+    const size_t first = 1;
+    const size_t last = 10;
+    const size_t step = 2;
+
+    auto rng = boost::irange(first, last, step);
     rng | print_to_cout;
 }
 
