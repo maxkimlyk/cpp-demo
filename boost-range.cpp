@@ -24,6 +24,8 @@
 #include <boost/range/counting_range.hpp>
 #include <boost/range/istream_range.hpp>
 #include <boost/range/irange.hpp>
+#include <boost/range/iterator_range.hpp>
+#include <boost/range/sub_range.hpp>
 
 #include <deque>
 #include <iostream>
@@ -283,6 +285,31 @@ DEMO(irange) {
     const size_t step = 2;
 
     auto rng = boost::irange(first, last, step);
+    rng | print_to_cout;
+}
+
+DEMO(iterator_range_class) {
+    // iterator_range encapsulates a pair of iterators and satisfy Forward Range concept
+
+    using Vector = std::vector<int>;
+    using CIterator = std::vector<int>::const_iterator;
+
+    std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7};
+
+    boost::iterator_range<CIterator> rng(vec.begin() + 1, vec.end() - 1);
+
+    rng | print_to_cout;
+}
+
+DEMO(sub_range_class) {
+    // sub_range is similar to iterator_range but can be instantiated with a range istead of raw iterator
+
+    using Vector = std::vector<int>;
+
+    const std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7};
+
+    boost::sub_range<const Vector> rng(vec.begin() + 1, vec.end() - 1);
+
     rng | print_to_cout;
 }
 
