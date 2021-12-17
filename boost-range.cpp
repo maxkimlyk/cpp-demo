@@ -320,7 +320,7 @@ DEMO(combine) {
 
 DEMO(join)
 {
-    // boost::join allow to build a chain of ranges.
+    // boost::join allows to build a chain of ranges.
 
     const std::deque<int> deq = {0, 1, 2, 3, 4};
     const std::vector<int> vec = {5, 6, 7, 8, 9};
