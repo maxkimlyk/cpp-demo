@@ -1,6 +1,5 @@
 #include "demo-common.h"
 
-#include <boost/range/join.hpp>
 #include <boost/range/adaptor/adjacent_filtered.hpp>
 #include <boost/range/adaptor/copied.hpp>
 #include <boost/range/adaptor/filtered.hpp>
@@ -26,6 +25,8 @@
 #include <boost/range/irange.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/sub_range.hpp>
+#include <boost/range/join.hpp>
+#include <boost/range/combine.hpp>
 
 #include <deque>
 #include <iostream>
@@ -199,18 +200,6 @@ DEMO(uniqued) {
     vec | boost::adaptors::uniqued | print_to_cout;
 }
 
-DEMO(join)
-{
-    // boost::join allow to build a chain of ranges.
-
-    const std::deque<int> deq = {0, 1, 2, 3, 4};
-    const std::vector<int> vec = {5, 6, 7, 8, 9};
-
-    const auto joined1 = boost::join(deq, vec);
-
-    joined1 | print_to_cout;
-}
-
 DEMO(algotirhm_unique) {
     const std::vector<int> original = {1, 1, 5, 5, 5, 4, 3};
 
@@ -311,6 +300,34 @@ DEMO(sub_range_class) {
     boost::sub_range<const Vector> rng(vec.begin() + 1, vec.end() - 1);
 
     rng | print_to_cout;
+}
+
+DEMO(combine) {
+    // boost::combine zips several ranges
+
+    std::vector<int> v = {1, 2, 3, 4, 5};
+    std::list<char> l = {'a', 'b', 'c', 'd', 'e'};
+
+    // ranges must have the same size!
+
+    int fst;
+    char snd;
+    for (auto v : boost::combine(v, l)) {
+        boost::tie(fst, snd) = v; // doesn't work with structure binding: [fst, snd] = v
+        std::cout << fst << ", " << snd << std::endl;
+    }
+}
+
+DEMO(join)
+{
+    // boost::join allow to build a chain of ranges.
+
+    const std::deque<int> deq = {0, 1, 2, 3, 4};
+    const std::vector<int> vec = {5, 6, 7, 8, 9};
+
+    const auto joined1 = boost::join(deq, vec);
+
+    joined1 | print_to_cout;
 }
 
 RUN_DEMOS
