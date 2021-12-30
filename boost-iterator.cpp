@@ -1,3 +1,5 @@
+#include "demo-common.h"
+
 // --- Concepts ---
 //
 // Value access concepts:
@@ -115,3 +117,104 @@
 //   10) iterator_traversal<X>::type is convertible to random_access_traversal_tag
 //
 
+// --- Iterator Facade ---
+#include <boost/iterator/iterator_facade.hpp>
+
+#include <optional>
+
+template <class SubIterator>
+class cycle_iterator : public boost::iterator_facade<
+                           /* Defived = */ cycle_iterator<SubIterator>,
+                           /* Value = */ int,
+                           /* CategoryOrTraversal = */ boost::random_access_traversal_tag,
+                           /* Reference = */ int&,
+                           /* Difference = */ ptrdiff_t>
+{
+private:
+    using Base = boost::iterator_facade<cycle_iterator<SubIterator>, int, boost::random_access_traversal_tag, int&, ptrdiff_t>;
+
+public:
+    cycle_iterator() = default;
+    cycle_iterator(SubIterator begin, SubIterator end, std::optional<SubIterator> pos = std::nullopt)
+        : begin_(begin), end_(end), pos_(pos ? *pos : begin)
+    {
+    }
+
+private:
+    friend class boost::iterator_core_access;
+
+    void increment()
+    {
+        ++pos_;
+        if (pos_ == end_)
+        {
+            pos_ = begin_;
+        }
+    }
+
+    void decrement()
+    {
+        if (pos_ == begin_)
+        {
+            pos_ == end_ - 1;
+        }
+        else
+        {
+            --pos_;
+        }
+    }
+
+    void advance(typename Base::difference_type n)
+    {
+        const typename Base::difference_type len = std::distance(begin_, end_);
+        if (len == 0)
+        {
+            return;
+        }
+        n = n % len;
+
+        const typename Base::difference_type to_end = std::distance(pos_, end_);
+        if (n < to_end)
+        {
+            pos_ += n;
+        }
+        else
+        {
+            pos_ = begin_ + (n - to_end);
+        }
+    }
+
+    typename Base::difference_type distance_to(const cycle_iterator& other) const
+    {
+        return std::distance(pos_, other.pos_);
+    }
+
+    bool equal(const cycle_iterator& other) const
+    {
+        return pos_ == other.pos_;
+    }
+
+    typename Base::reference dereference() const
+    {
+        return *pos_;
+    }
+
+    SubIterator begin_;
+    SubIterator end_;
+    SubIterator pos_;
+};
+
+DEMO(iterator_facade)
+{
+    std::vector<int> v = {1, 2, 3, 4, 5};
+    auto citer = cycle_iterator(v.begin(), v.end());
+
+    std::cout << "cycle_iterator: ";
+    for (int i = 0; i < 15; ++i, ++citer)
+    {
+        std::cout << *citer << ", ";
+    }
+    std::cout << std::endl;
+}
+
+RUN_DEMOS
