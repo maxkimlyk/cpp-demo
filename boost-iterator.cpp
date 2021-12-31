@@ -217,4 +217,86 @@ DEMO(iterator_facade)
     std::cout << std::endl;
 }
 
+// --- Iterator adaptor ---
+#include <boost/iterator/iterator_adaptor.hpp>
+
+template <class BaseIter>
+class cycle_iterator_adaptor : public boost::iterator_adaptor<
+                                   /* Derived = */ cycle_iterator_adaptor<BaseIter>,
+                                   /* Base = */ BaseIter,
+                                   /* Value = */ boost::use_default,
+                                   /* Traversal = */ boost::use_default,
+                                   /* Reference = */ boost::use_default,
+                                   /* Dereference = */ boost::use_default>
+{
+private:
+    using Base =
+        boost::iterator_adaptor<cycle_iterator_adaptor<BaseIter>, BaseIter, boost::use_default, boost::use_default, boost::use_default, boost::use_default>;
+
+public:
+    cycle_iterator_adaptor() = default;
+
+    cycle_iterator_adaptor(BaseIter begin, BaseIter end, std::optional<BaseIter> pos = std::nullopt)
+        : cycle_iterator_adaptor::iterator_adaptor_(pos ? *pos : begin), begin_(begin), end_(end)
+    {
+    }
+
+private:
+    friend class boost::iterator_core_access;
+
+    void advance(typename Base::difference_type n)
+    {
+        const typename Base::difference_type len = std::distance(begin_, end_);
+        if (len == 0)
+        {
+            return;
+        }
+        n = n % len;
+
+        const typename Base::difference_type to_end = std::distance(this->base_reference(), end_);
+        if (n < to_end)
+        {
+            this->base_reference() += n;
+        }
+        else
+        {
+            this->base_reference() = begin_ + (n - to_end);
+        }
+    }
+
+    void increment()
+    {
+        ++this->base_reference(); // returns reference to base iterator
+        if (this->base_reference() == end_)
+        {
+            this->base_reference() = begin_;
+        }
+    }
+
+    void decrement()
+    {
+        if (this->base_reference() == begin_)
+        {
+            this->base_reference() = end_;
+        }
+        --this->base_reference();
+    }
+
+    BaseIter begin_;
+    BaseIter end_;
+};
+
+DEMO(iterator_adaptor)
+{
+    const std::vector<int> v = {1, 2, 3, 4, 5};
+    auto citer = cycle_iterator_adaptor(v.begin(), v.end());
+
+    std::cout << "cycle_iterator_adaptor: ";
+    for (int i = 0; i < 15; ++i, ++citer)
+    {
+        std::cout << *citer << ", ";
+    }
+    std::cout << std::endl;
+}
+
 RUN_DEMOS
