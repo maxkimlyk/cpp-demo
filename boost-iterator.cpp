@@ -299,4 +299,26 @@ DEMO(iterator_adaptor)
     std::cout << std::endl;
 }
 
+// --- Specialized Adaptors ---
+#include <boost/iterator/counting_iterator.hpp>
+
+DEMO(counting_iterator)
+{
+    std::copy(boost::counting_iterator<int>(0), boost::counting_iterator<int>(10), std::ostream_iterator<int>(std::cout, ","));
+    std::cout << std::endl;
+}
+
+#include <boost/iterator/filter_iterator.hpp>
+
+DEMO(filter_iterator)
+{
+    std::vector<int> v = {0, -1, 2, -3, 4, -5, 6};
+
+    const auto is_positive = [](int a) { return a > 0; };
+
+    std::copy(boost::make_filter_iterator(is_positive, v.begin()), boost::make_filter_iterator(is_positive, v.end()),
+              std::ostream_iterator<int>(std::cout, ","));
+    std::cout << std::endl;
+}
+
 RUN_DEMOS
