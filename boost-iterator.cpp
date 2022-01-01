@@ -379,5 +379,74 @@ DEMO(permutation_iterator)
     std::copy(boost::make_permutation_iterator(chars.begin(), indices.begin()),
               boost::make_permutation_iterator(chars.begin(), indices.end()),
               std::ostream_iterator<char>(std::cout, ", "));
+    std::cout << std::endl;
 }
+
+#include <boost/iterator/reverse_iterator.hpp>
+
+DEMO(reverse_iterator)
+{
+    std::vector<int> v = {1, 2, 3, 4, 5};
+
+    std::copy(boost::make_reverse_iterator(v.end()), boost::make_reverse_iterator(v.begin()),
+              std::ostream_iterator<int>(std::cout, ","));
+    std::cout << std::endl;
+}
+
+#include <boost/shared_container_iterator.hpp>
+#include <boost/shared_ptr.hpp>
+
+DEMO(shared_container_iterator)
+{
+    // conbines shared_ptr with iterator to guarantee lifetime of the container
+
+    const auto f = []() {
+        auto v = boost::shared_ptr<std::vector<int>>(
+            new std::vector<int>()); // works only with boost::shared_ptr, it sucks...
+        v->push_back(1);
+        v->push_back(2);
+        v->push_back(3);
+        return std::make_pair(boost::make_shared_container_iterator(v->begin(), v),
+                              boost::make_shared_container_iterator(v->end(), v));
+    };
+
+    const auto [begin, end] = f();
+    std::copy(begin, end, std::ostream_iterator<int>(std::cout, ","));
+    std::cout << std::endl;
+}
+
+#include <boost/iterator/transform_iterator.hpp>
+
+DEMO(transform_iterator)
+{
+    const std::vector<int> v = {1, 2, 3, 4, 5};
+
+    const auto f = [](int i) { return i % 2; };
+
+    std::copy(boost::make_transform_iterator(v.begin(), f),
+              boost::make_transform_iterator(v.end(), f), std::ostream_iterator<int>(std::cout, ", "));
+    std::cout << std::endl;
+}
+
+#include <boost/iterator/zip_iterator.hpp>
+#include <string>
+
+DEMO(zip_iterator)
+{
+    const std::vector<int> indices = {1, 2, 3, 4, 5};
+    const std::vector<std::string> words = {"one", "two", "three", "four", "five"};
+
+    // Ranges must have the same size! It is UB otherwise.
+
+    // and it doesn't work with std::tuple
+    const auto begin = boost::make_zip_iterator(boost::make_tuple(indices.begin(), words.begin()));
+    const auto end = boost::make_zip_iterator(boost::make_tuple(indices.end(), words.end()));
+
+    const auto print_pair = [](const auto& pair) {
+        std::cout << pair.template get<0>() << ", " << pair.template get<1>() << std::endl;
+    };
+
+    std::copy(begin, end, boost::make_function_output_iterator(print_pair));
+}
+
 RUN_DEMOS
