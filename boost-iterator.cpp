@@ -131,7 +131,8 @@ class cycle_iterator : public boost::iterator_facade<
                            /* Difference = */ ptrdiff_t>
 {
 private:
-    using Base = boost::iterator_facade<cycle_iterator<SubIterator>, int, boost::random_access_traversal_tag, int&, ptrdiff_t>;
+    using Base = boost::iterator_facade<cycle_iterator<SubIterator>, int,
+                                        boost::random_access_traversal_tag, int&, ptrdiff_t>;
 
 public:
     cycle_iterator() = default;
@@ -231,7 +232,8 @@ class cycle_iterator_adaptor : public boost::iterator_adaptor<
 {
 private:
     using Base =
-        boost::iterator_adaptor<cycle_iterator_adaptor<BaseIter>, BaseIter, boost::use_default, boost::use_default, boost::use_default, boost::use_default>;
+        boost::iterator_adaptor<cycle_iterator_adaptor<BaseIter>, BaseIter, boost::use_default,
+                                boost::use_default, boost::use_default, boost::use_default>;
 
 public:
     cycle_iterator_adaptor() = default;
@@ -304,7 +306,8 @@ DEMO(iterator_adaptor)
 
 DEMO(counting_iterator)
 {
-    std::copy(boost::counting_iterator<int>(0), boost::counting_iterator<int>(10), std::ostream_iterator<int>(std::cout, ","));
+    std::copy(boost::counting_iterator<int>(0), boost::counting_iterator<int>(10),
+              std::ostream_iterator<int>(std::cout, ","));
     std::cout << std::endl;
 }
 
@@ -316,9 +319,65 @@ DEMO(filter_iterator)
 
     const auto is_positive = [](int a) { return a > 0; };
 
-    std::copy(boost::make_filter_iterator(is_positive, v.begin()), boost::make_filter_iterator(is_positive, v.end()),
+    std::copy(boost::make_filter_iterator(is_positive, v.begin()),
+              boost::make_filter_iterator(is_positive, v.end()),
               std::ostream_iterator<int>(std::cout, ","));
     std::cout << std::endl;
 }
 
+#include <boost/iterator/function_input_iterator.hpp>
+
+DEMO(function_input_iterator)
+{
+    // allow incapsulating function object into iterator while tracking how many times function was invoked.
+    const auto gen = []() { return rand(); };
+
+    std::copy(boost::make_function_input_iterator(gen, 0),
+              boost::make_function_input_iterator(gen, 6), std::ostream_iterator<int>(std::cout, ","));
+    std::cout << std::endl;
+}
+
+#include <boost/function_output_iterator.hpp>
+
+DEMO(function_output_iterator)
+{
+    // applies function to each assigned value
+    const auto fun = [](const auto& something) { std::cout << something << std::endl; };
+
+    std::vector<int> v = {1, 2, 3, 4};
+
+    std::copy(v.begin(), v.end(), boost::make_function_output_iterator(fun));
+}
+
+#include <boost/iterator/indirect_iterator.hpp>
+#include <memory>
+
+DEMO(indirect_iterator)
+{
+    // applies extra operator* on dereference
+
+    const std::vector v = {
+        std::make_shared<int>(1),
+        std::make_shared<int>(2),
+        std::make_shared<int>(3),
+    };
+
+    std::copy(boost::make_indirect_iterator(v.begin()), boost::make_indirect_iterator(v.end()),
+              std::ostream_iterator<int>(std::cout, ","));
+    std::cout << std::endl;
+}
+
+#include <boost/iterator/permutation_iterator.hpp>
+
+DEMO(permutation_iterator)
+{
+    // returns elements read from random access iterator according to given index range
+
+    const std::vector<char> chars = {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
+    const std::vector<int> indices = {6, 1, 1, 3, 5};
+
+    std::copy(boost::make_permutation_iterator(chars.begin(), indices.begin()),
+              boost::make_permutation_iterator(chars.begin(), indices.end()),
+              std::ostream_iterator<char>(std::cout, ", "));
+}
 RUN_DEMOS
