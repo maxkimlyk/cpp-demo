@@ -6,7 +6,9 @@ project(cpp-demo)
 
 find_package (Threads)
 
-find_package(Boost COMPONENTS regex)
+set(BOOST_URL https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.7z)
+set(BOOST_URL_SHA256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855)
+add_subdirectory(boost-cmake)
 
 file(GLOB SRC *.cpp)
 
@@ -16,6 +18,6 @@ foreach(src_ ${SRC})
     target_link_libraries (${name_} ${CMAKE_THREAD_LIBS_INIT} )
 
     if (${name_} MATCHES "boost-.*")
-        target_link_libraries(${name_} ${Boost_LIBRARIES})
+        target_link_libraries(${name_} Boost::boost Boost::regex)
     endif()
 endforeach()
