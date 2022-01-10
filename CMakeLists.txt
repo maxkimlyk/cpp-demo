@@ -4,10 +4,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(cpp-demo)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+
 find_package (Threads)
 
-set(BOOST_URL https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.7z)
-set(BOOST_URL_SHA256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855)
+# set(BOOST_URL https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.7z)
+# set(BOOST_URL_SHA256 090cefea470bca990fa3f3ed793d865389426915b37a2a3258524a7258f0790c)
 add_subdirectory(boost-cmake)
 
 file(GLOB SRC *.cpp)
@@ -21,3 +23,4 @@ foreach(src_ ${SRC})
         target_link_libraries(${name_} Boost::boost Boost::regex)
     endif()
 endforeach()
+
