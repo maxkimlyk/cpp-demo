@@ -52,21 +52,25 @@ struct twice :
 {};
 
 static_assert(twice<plus_1, boost::mpl::int_<1>>::type::value == boost::mpl::int_<3>::value);
-static_assert(std::is_same_v<twice<add_pointer_f, int>::type, int**>);
+static_assert(std::is_same_v< twice<add_pointer_f, int>::type, int** >);
 
-// partial metafuction application
+// placeholder expression: partial metafuction application
 using double_f = boost::mpl::plus<_1, _1>;
 
-// apply invokes metafunction represented by a metafunction class
+// apply evaluates lambda expression (metafunction class or placeholder expression) on given arguments
 // (is the same as invoking its nested apply metafunction)
 using d1 = boost::mpl::apply<double_f, boost::mpl::int_<1>>::type;
 static_assert(d1::value == 2);
+
+// it can be also used with non-metafunction templates
+using vector_of_int = boost::mpl::apply<std::vector<_1>, int>::type;
+static_assert(std::is_same_v< vector_of_int, std::vector<int> >);
 
 // metafunction composition
 using m_plus_minus_f = boost::mpl::multiplies<
     boost::mpl::plus<_1,_2>, boost::mpl::minus<_1,_2>
   >;
-static_assert( boost::mpl::apply<m_plus_minus_f, ten, one>::type::value == 11 * 9 );
+static_assert(boost::mpl::apply<m_plus_minus_f, ten, one>::type::value == 11 * 9 );
 
 // unnamed placeholder: n-th apprearance of it is transformed to _1, _2, etc.
 using plus_f = boost::mpl::plus<_, _>; // is the same as plus<_1, _2>
