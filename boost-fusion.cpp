@@ -1,5 +1,5 @@
-#include <boost/fusion/sequence.hpp>
-#include <boost/fusion/algorithm.hpp>
+#include <boost/fusion/include/sequence.hpp>
+#include <boost/fusion/include/algorithm.hpp>
 #include <boost/fusion/include/pair.hpp>
 #include <boost/fusion/include/map.hpp>
 
