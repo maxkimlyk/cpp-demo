@@ -1,5 +1,7 @@
+#include <any>
 #include <string>
 #include <cassert>
+#include <type_traits>
 
 #include "demo-common.h"
 
@@ -34,6 +36,75 @@ DEMO(traits_check)
     {
     };
     static_assert(!applicable_to_to_string(my_struct{}));
+}
+
+struct default_tag
+{
+};
+
+template <class T, class F>
+auto case_(F f)
+{
+    return boost::hana::make_pair(boost::hana::type_c<T>, f);
+}
+
+template <class F>
+auto default_(F f)
+{
+    return case_<default_tag>(f);
+}
+
+template <class DefaultF>
+auto switch_apply_f(std::any& v, DefaultF default_f)
+{
+    return default_f();
+}
+
+template <class DefaultF, class Case, class... Rest>
+auto switch_apply_f(std::any& v, DefaultF& default_f, Case& cs, Rest&... rest)
+{
+    using T = typename decltype(+boost::hana::first(cs))::type;
+    if (v.type() == typeid(T))
+    {
+        return boost::hana::second(cs)(*std::any_cast<T>(&v));
+    }
+    else
+    {
+        return switch_apply_f(v, default_f, rest...);
+    }
+}
+
+auto switch_(std::any& v)
+{
+    return [&v](const auto... cs) {
+        auto cases = boost::hana::make_tuple(cs...);
+
+        auto default_case = boost::hana::find_if(cases, [](const auto& c) {
+            return boost::hana::first(c) == boost::hana::type_c<default_tag>;
+        });
+
+        static_assert(default_case != boost::hana::nothing, "no default_ statement");
+
+        auto rest = boost::hana::filter(cases, [](const auto& c) {
+            return boost::hana::first(c) != boost::hana::type_c<default_tag>;
+        });
+
+        return boost::hana::unpack(rest, [&](const auto&... rest) {
+            const auto& default_f = boost::hana::second(*default_case);
+            return switch_apply_f(v, default_f, rest...);
+        });
+    };
+}
+
+DEMO(use_case_switch)
+{
+    std::vector<std::any> anies = {std::any(5), std::any("hello")};
+
+    for (std::any& a : anies)
+    {
+        switch_(a)(case_<int>([](int x) { std::cout << "int: " << x << std::endl; }),
+                   default_([]() { std::cout << "other_type" << std::endl; }));
+    }
 }
 
 RUN_DEMOS
