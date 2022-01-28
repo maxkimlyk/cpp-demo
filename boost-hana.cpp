@@ -107,4 +107,13 @@ DEMO(use_case_switch)
     }
 }
 
+DEMO(integral_constant)
+{
+    constexpr boost::hana::integral_constant<int, 1> one;
+    constexpr boost::hana::integral_constant<int, 2> two;
+    constexpr boost::hana::integral_constant<int, 3> three;
+
+    static_assert(one + two == three);
+}
+
 RUN_DEMOS
