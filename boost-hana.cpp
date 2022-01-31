@@ -116,4 +116,24 @@ DEMO(integral_constant)
     static_assert(one + two == three);
 }
 
+DEMO(branching)
+{
+    const int one = boost::hana::if_(boost::hana::true_c, 1, "one");
+    const char* const str_one = boost::hana::if_(boost::hana::false_c, 1, "one");
+
+    const auto access = [](auto value) {
+        const auto can_be_dereferenced = boost::hana::is_valid([](auto x) -> decltype(*x) {});
+        if constexpr(can_be_dereferenced(value)) {
+            return *value;
+        } else {
+            return value;
+        }
+    };
+
+    int five = 5;
+
+    access(5);
+    access(&five);
+}
+
 RUN_DEMOS
