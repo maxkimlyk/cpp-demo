@@ -20,7 +20,7 @@ foreach(src_ ${SRC})
     target_link_libraries (${name_} ${CMAKE_THREAD_LIBS_INIT} )
 
     if (${name_} MATCHES "boost-.*")
-        target_link_libraries(${name_} Boost::boost Boost::regex)
+        target_link_libraries(${name_} Boost::boost Boost::regex Boost::program_options)
     endif()
 endforeach()
 
