@@ -16,7 +16,6 @@ DEMO(timer)
     std::cout << "Done" << std::endl;
 }
 
-
 DEMO(timer_async)
 {
     boost::asio::io_context io;
@@ -83,6 +82,43 @@ DEMO(strand)
     std::thread t(boost::bind(&boost::asio::io_context::run, &io));
     io.run();
     t.join();
+}
+
+DEMO(request)
+{
+    const std::string_view address = "178.62.9.171";
+
+    boost::system::error_code ec;
+    boost::asio::io_context context;
+    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::make_address(address, ec), 80);
+
+    boost::asio::ip::tcp::socket socket(context);
+    socket.connect(endpoint, ec);
+
+    if (ec) {
+        std::cout << "Failed to connect to address " << address << std::endl;
+        return;
+    }
+
+    const std::string_view request =
+        "GET / HTTP/1.1\r\n"
+        "Host: myip.ru\r\n"
+        "Connection: close\r\n\r\n";
+
+    socket.write_some(boost::asio::buffer(request.data(), request.size()), ec);
+    socket.wait(socket.wait_read);
+
+    size_t bytes = socket.available();
+    std::cout << "Bytes available: " << bytes << std::endl;
+
+    if (bytes > 0) {
+        std::vector<char> buffer(bytes);
+        socket.read_some(boost::asio::buffer(buffer.data(), buffer.size()), ec);
+
+        for (auto c : buffer) {
+            std::cout << c;
+        }
+    }
 }
 
 RUN_DEMOS
