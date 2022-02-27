@@ -116,9 +116,9 @@ DEMO(request)
         std::vector<char> buffer(bytes);
         socket.read_some(boost::asio::buffer(buffer.data(), buffer.size()), ec);
 
-        for (auto c : buffer)
+        for (size_t i = 0; i < bytes; ++i)
         {
-            std::cout << c;
+            std::cout << buffer[i];
         }
     }
 }
@@ -130,11 +130,11 @@ void ListenToData(boost::asio::ip::tcp::socket& socket)
                            [&](boost::system::error_code ec, size_t length) {
                                if (!ec)
                                {
-                                   std::cout << "\n\nRead" << length << "bytes\n\n";
+                                   std::cout << "\n\nRead " << length << " bytes\n\n";
 
-                                   for (auto c : buffer)
+                                   for (size_t i = 0; i < length; ++i)
                                    {
-                                       std::cout << c;
+                                       std::cout << buffer[i];
                                    }
 
                                    ListenToData(socket);
