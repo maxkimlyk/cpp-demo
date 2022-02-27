@@ -95,15 +95,15 @@ DEMO(request)
     boost::asio::ip::tcp::socket socket(context);
     socket.connect(endpoint, ec);
 
-    if (ec) {
+    if (ec)
+    {
         std::cout << "Failed to connect to address " << address << std::endl;
         return;
     }
 
-    const std::string_view request =
-        "GET / HTTP/1.1\r\n"
-        "Host: myip.ru\r\n"
-        "Connection: close\r\n\r\n";
+    const std::string_view request = "GET / HTTP/1.1\r\n"
+                                     "Host: myip.ru\r\n"
+                                     "Connection: close\r\n\r\n";
 
     socket.write_some(boost::asio::buffer(request.data(), request.size()), ec);
     socket.wait(socket.wait_read);
@@ -111,14 +111,63 @@ DEMO(request)
     size_t bytes = socket.available();
     std::cout << "Bytes available: " << bytes << std::endl;
 
-    if (bytes > 0) {
+    if (bytes > 0)
+    {
         std::vector<char> buffer(bytes);
         socket.read_some(boost::asio::buffer(buffer.data(), buffer.size()), ec);
 
-        for (auto c : buffer) {
+        for (auto c : buffer)
+        {
             std::cout << c;
         }
     }
+}
+
+void ListenToData(boost::asio::ip::tcp::socket& socket)
+{
+    static std::vector<char> buffer(1024);
+    socket.async_read_some(boost::asio::buffer(buffer.data(), buffer.size()),
+                           [&](boost::system::error_code ec, size_t length) {
+                               if (!ec)
+                               {
+                                   std::cout << "\n\nRead" << length << "bytes\n\n";
+
+                                   for (auto c : buffer)
+                                   {
+                                       std::cout << c;
+                                   }
+
+                                   ListenToData(socket);
+                               }
+                           });
+}
+
+DEMO(request_async)
+{
+    const std::string_view address = "178.62.9.171";
+
+    boost::system::error_code ec;
+    boost::asio::io_context context;
+    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::make_address(address, ec), 80);
+
+    boost::asio::ip::tcp::socket socket(context);
+    socket.connect(endpoint, ec);
+
+    if (ec)
+    {
+        std::cout << "Failed to connect to address " << address << std::endl;
+        return;
+    }
+
+    const std::string_view request = "GET / HTTP/1.1\r\n"
+                                     "Host: myip.ru\r\n"
+                                     "Connection: close\r\n\r\n";
+
+    socket.write_some(boost::asio::buffer(request.data(), request.size()), ec);
+
+    ListenToData(socket);
+
+    context.run();
 }
 
 RUN_DEMOS
