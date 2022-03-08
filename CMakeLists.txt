@@ -20,18 +20,23 @@ find_package(Threads)
 find_package(Boost 1.78.0
              COMPONENTS ${BOOST_LIBS_REQUIRED})
 
+file(GLOB SRC *.cpp)
+file(GLOB BOOST_SRC boost/*.cpp)
+
 if (DISABLE_BOOST)
     message("-- Boost examples are disabled...")
+else()
+    list(APPEND SRC ${BOOST_SRC})
 endif()
 
-file(GLOB SRC *.cpp)
+message("Current: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 foreach(src_ ${SRC})
     get_filename_component(name_ ${src_} NAME_WE)
 
     set(target_libs_ ${CMAKE_THREAD_LIBS_INIT})
 
-    if (${name_} MATCHES "boost-.*")
+    if (${src_} IN_LIST BOOST_SRC)
         if (DISABLE_BOOST)
             continue()
         endif()
@@ -39,6 +44,7 @@ foreach(src_ ${SRC})
     endif()
 
     add_executable(${name_} ${src_})
-    target_link_libraries (${name_} ${target_libs_})
+    target_link_libraries(${name_} ${target_libs_})
+    target_include_directories(${name_} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 endforeach()
 

@@ -9,7 +9,7 @@ DEMO(http_client_sync)
     const std::string host = "info.cern.ch";
     const std::string port = "80";
     const std::string target = "/";
-    const int version = 10;
+    const int version = 11;
 
     boost::asio::io_context ioc;
 
