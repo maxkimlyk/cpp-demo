@@ -1,28 +1,15 @@
+#include <type_traits>
+
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 
 #include <demo-common.h>
 
-DEMO(adjacency_list)
+template <class Graph>
+void PrintGraphInfo(const Graph g)
 {
-    using Graph = boost::adjacency_list<
-        /* OutEdgeListS = */ boost::vecS,
-        /* VertexListS = */ boost::vecS,
-        /* DirectedS = */ boost::bidirectionalS>;
-
-    const size_t num_vertices(5);
-    Graph g(num_vertices);
-
-    add_edge(0, 1, g);
-    add_edge(0, 2, g);
-    add_edge(0, 3, g);
-    add_edge(1, 0, g);
-    add_edge(2, 0, g);
-    add_edge(2, 3, g);
-    add_edge(3, 4, g);
-    add_edge(4, 1, g);
-
     auto index_map = get(boost::vertex_index, g);
 
     auto [v_begin, v_end] = vertices(g);
@@ -54,14 +41,17 @@ DEMO(adjacency_list)
         }
         std::cout << std::endl;
 
-        auto [ie_begin, ie_end] = in_edges(*v_it, g);
-        std::cout << " in-edges: ";
-        for (auto it = ie_begin; it != ie_end; ++it)
+        if constexpr (std::is_same_v<typename boost::graph_traits<Graph>::directed_category, boost::bidirectional_tag>)
         {
-            std::cout << "(" << index_map[source(*it, g)] << " -> " << index_map[target(*it, g)]
-                      << ") ";
+            auto [ie_begin, ie_end] = in_edges(*v_it, g);
+            std::cout << " in-edges: ";
+            for (auto it = ie_begin; it != ie_end; ++it)
+            {
+                std::cout << "(" << index_map[source(*it, g)] << " -> " << index_map[target(*it, g)]
+                          << ") ";
+            }
+            std::cout << std::endl;
         }
-        std::cout << std::endl;
 
         auto [av_begin, av_end] = adjacent_vertices(*v_it, g);
         std::cout << " adjacent vertices: ";
@@ -71,6 +61,48 @@ DEMO(adjacency_list)
         }
         std::cout << std::endl;
     }
+}
+
+DEMO(adjacency_list)
+{
+    using Graph = boost::adjacency_list<
+        /* OutEdgeListS = */ boost::vecS,
+        /* VertexListS = */ boost::vecS,
+        /* DirectedS = */ boost::bidirectionalS>;
+
+    const size_t num_vertices(5);
+    Graph g(num_vertices);
+
+    add_edge(0, 1, g);
+    add_edge(0, 2, g);
+    add_edge(0, 3, g);
+    add_edge(1, 0, g);
+    add_edge(2, 0, g);
+    add_edge(2, 3, g);
+    add_edge(3, 4, g);
+    add_edge(4, 1, g);
+
+    PrintGraphInfo(g);
+}
+
+DEMO(adjacency_matrix)
+{
+    using Graph = boost::adjacency_matrix<
+        /* Directed = */ boost::directedS>;
+
+    const size_t num_vertices(5);
+    Graph g(num_vertices);
+
+    add_edge(0, 1, g);
+    add_edge(0, 2, g);
+    add_edge(0, 3, g);
+    add_edge(1, 0, g);
+    add_edge(2, 0, g);
+    add_edge(2, 3, g);
+    add_edge(3, 4, g);
+    add_edge(4, 1, g);
+
+    PrintGraphInfo(g);
 }
 
 DEMO(dijkstra)
@@ -93,8 +125,9 @@ DEMO(dijkstra)
     std::vector<int> distances(num_vertices);
     dijkstra_shortest_paths(g, *(vertices(g).first), boost::distance_map(distances.data()));
 
-    for (size_t i = 0; i < num_vertices; ++i) {
-      std::cout << "Distance 0 -> " << i << ": " << distances[i] << std::endl;
+    for (size_t i = 0; i < num_vertices; ++i)
+    {
+        std::cout << "Distance 0 -> " << i << ": " << distances[i] << std::endl;
     }
 }
 
