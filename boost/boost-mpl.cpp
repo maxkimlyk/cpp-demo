@@ -75,4 +75,4 @@ static_assert(boost::mpl::apply<m_plus_minus_f, ten, one>::type::value == 11 * 9
 // unnamed placeholder: n-th apprearance of it is transformed to _1, _2, etc.
 using plus_f = boost::mpl::plus<_, _>; // is the same as plus<_1, _2>
 
-RUN_DEMOS
+

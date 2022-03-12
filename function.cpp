@@ -50,4 +50,4 @@ DEMO(function)
     std::cout << "calling func member: " << func_member(&c) << "\n";
 }
 
-RUN_DEMOS
+

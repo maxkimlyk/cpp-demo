@@ -125,4 +125,4 @@ DEMO(unordered_set)
     lookup(5);
 }
 
-RUN_DEMOS
+

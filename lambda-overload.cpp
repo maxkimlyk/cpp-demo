@@ -10,8 +10,8 @@ struct overloaded : Ts...
 // Allow deduce template parameters of class from constructor.
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
-int main()
- {
+DEMO(overloaded)
+{
     const auto lambda = overloaded {
         [](int i)   { std::cout << "int: " << i << "\n"; },
         [](char ch) { std::cout << "char: " << ch << "\n"; }
@@ -19,6 +19,4 @@ int main()
 
     lambda(1);
     lambda('a');
-
-    return 0;
 }

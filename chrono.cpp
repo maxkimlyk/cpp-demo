@@ -25,4 +25,4 @@ DEMO(time_arithmetics)
               << " seconds bettween two timestamps\n";
 }
 
-RUN_DEMOS
+

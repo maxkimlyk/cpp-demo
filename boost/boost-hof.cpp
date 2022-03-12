@@ -43,4 +43,4 @@ DEMO(adaptors)
     // clang-format on
 }
 
-RUN_DEMOS
+

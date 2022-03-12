@@ -24,4 +24,4 @@ DEMO(aggregate_initialization)
     std::cout << st.c.x << "\n";
 }
 
-RUN_DEMOS
+

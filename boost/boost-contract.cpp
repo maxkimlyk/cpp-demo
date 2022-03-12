@@ -149,4 +149,4 @@ DEMO(throw_on_failures)
     }
 }
 
-RUN_DEMOS
+

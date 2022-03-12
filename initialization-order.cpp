@@ -57,4 +57,4 @@ DEMO(initialization_order)
     std::cout << "right_order.Base2::v = " << right_order.Base2::v << "\n";
 }
 
-RUN_DEMOS
+

@@ -16,4 +16,4 @@ DEMO(regex)
             std::cout << str << "\n";
 }
 
-RUN_DEMOS
+

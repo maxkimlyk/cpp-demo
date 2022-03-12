@@ -123,4 +123,4 @@ DEMO(describe_struct)
     std::cout << to_string(obj) << std::endl;
 }
 
-RUN_DEMOS
+

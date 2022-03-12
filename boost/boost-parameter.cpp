@@ -40,4 +40,4 @@ DEMO(call)
     sum(1, 2, _config = Config{true});
 }
 
-RUN_DEMOS
+

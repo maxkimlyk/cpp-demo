@@ -106,4 +106,4 @@ DEMO(perfect_forwarding)
     wrapper_by_ref(Class(4));
 }
 
-RUN_DEMOS
+

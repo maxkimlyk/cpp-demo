@@ -20,4 +20,4 @@ DEMO(mutable_lambda)
    func2();
 }
 
-RUN_DEMOS
+

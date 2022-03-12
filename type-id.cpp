@@ -39,4 +39,4 @@ DEMO(typeid)
     std::cout << "2 + 3.0f : " << typeid(2 + 3.0f).name() << "\n";             // float
 }
 
-RUN_DEMOS
+

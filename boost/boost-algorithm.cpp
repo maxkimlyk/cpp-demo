@@ -81,4 +81,4 @@ DEMO(hex)
     std::cout << std::endl << "^-int---^float--";
 }
 
-RUN_DEMOS
+

@@ -31,4 +31,4 @@ DEMO(can_be_dereferenced)
         std::cout << "int cannot be dereferenced.\n";
 }
 
-RUN_DEMOS
+

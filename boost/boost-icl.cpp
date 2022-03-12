@@ -92,4 +92,4 @@ DEMO(split_interval_map)
     std::cout << split_map << std::endl;
 }
 
-RUN_DEMOS
+

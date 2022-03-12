@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-static std::vector<struct __demo_base__*> __demos__;
+inline std::vector<struct __demo_base__*> __demos__;
 
 struct __demo_base__
 {
@@ -30,16 +30,15 @@ struct __demo_base__
                                           \
     void __##name##_demo__::operator()() const
 
-#define RUN_DEMOS \
-    int main()                                                     \
-    {                                                              \
-        for (auto demo : __demos__)                                \
-        {                                                          \
-            std::cout << "===== " << demo->__name__ << " =====\n"; \
-            (*demo)();                                             \
-            std::cout << "\n";                                     \
-        }                                                          \
-        return 0;                                                  \
+int main()
+{
+    for (auto demo : __demos__)
+    {
+        std::cout << "===== " << demo->__name__ << " =====\n";
+        (*demo)();
+        std::cout << "\n";
     }
+    return 0;
+}
 
 #endif

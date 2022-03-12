@@ -82,4 +82,4 @@ decltype(auto) func() // equivalent to decltype(5 + 1)
     return 5 + 1;
 }
 
-RUN_DEMOS
+

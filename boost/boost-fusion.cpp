@@ -89,4 +89,4 @@ DEMO(std_tuple_adapter)
     boost::fusion::for_each(tpl, print_with_type);
 }
 
-RUN_DEMOS
+

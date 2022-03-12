@@ -89,4 +89,4 @@ DEMO(convex_hull)
     std::cout << "convex hull would be " << dsv(hull) << std::endl;
 }
 
-RUN_DEMOS
+

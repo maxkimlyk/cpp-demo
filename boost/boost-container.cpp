@@ -142,4 +142,4 @@ DEMO(small_vector)
     print_func(vec);
 }
 
-RUN_DEMOS
+

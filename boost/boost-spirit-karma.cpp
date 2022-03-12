@@ -32,4 +32,4 @@ DEMO(generator)
 
 }
 
-RUN_DEMOS
+

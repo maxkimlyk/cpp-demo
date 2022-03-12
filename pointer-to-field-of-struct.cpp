@@ -22,4 +22,4 @@ DEMO(pointer_to_field_of_struct)
     PrintCertainField(s, &Struct::field3);
 }
 
-RUN_DEMOS
+

@@ -449,4 +449,4 @@ DEMO(zip_iterator)
     std::copy(begin, end, boost::make_function_output_iterator(print_pair));
 }
 
-RUN_DEMOS
+

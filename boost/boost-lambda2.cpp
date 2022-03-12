@@ -24,4 +24,4 @@ DEMO(lambda2)
     }
 }
 
-RUN_DEMOS
+

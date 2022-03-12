@@ -72,4 +72,4 @@ DEMO(rule)
     }
 }
 
-RUN_DEMOS
+

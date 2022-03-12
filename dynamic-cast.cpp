@@ -39,4 +39,4 @@ DEMO(dynamic_cast_demo)
     }
 }
 
-RUN_DEMOS
+

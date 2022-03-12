@@ -30,4 +30,4 @@ DEMO(circular_buffer)
     print_buffer();
 }
 
-RUN_DEMOS
+

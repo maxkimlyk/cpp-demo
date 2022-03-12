@@ -16,4 +16,4 @@ DEMO(bimap)
     std::cout << "pair for 'five' is " << bimap.right.find("five")->second << std::endl;
 }
 
-RUN_DEMOS
+

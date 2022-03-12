@@ -46,4 +46,4 @@ DEMO(for_each)
     });
 }
 
-RUN_DEMOS
+

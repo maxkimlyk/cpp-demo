@@ -45,4 +45,4 @@ DEMO(http_client_sync)
         throw boost::beast::system_error{ec};
 }
 
-RUN_DEMOS
+

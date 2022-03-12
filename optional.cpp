@@ -23,4 +23,4 @@ DEMO(optional)
     std::cout << "var1 has value " << var1.value_or(-1) << " (-1 if empty)\n";
 }
 
-RUN_DEMOS
+

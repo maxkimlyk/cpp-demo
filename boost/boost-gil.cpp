@@ -51,4 +51,4 @@ DEMO(histogram)
     }
 }
 
-RUN_DEMOS
+

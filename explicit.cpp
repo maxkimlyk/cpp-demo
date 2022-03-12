@@ -37,4 +37,4 @@ DEMO(explicit)
     bool bb2 = static_cast<bool>(b2); // static cast explicitly call C2::operator bool
 }
 
-RUN_DEMOS
+

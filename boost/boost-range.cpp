@@ -330,4 +330,4 @@ DEMO(join)
     joined1 | print_to_cout;
 }
 
-RUN_DEMOS
+

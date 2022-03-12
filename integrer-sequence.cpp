@@ -46,4 +46,4 @@ DEMO(integer_sequence)
         std::cout << a << " ";
 }
 
-RUN_DEMOS
+

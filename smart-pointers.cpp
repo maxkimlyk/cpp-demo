@@ -133,4 +133,4 @@ DEMO(enable_shared_from_this)
     // so we have double deletion of Bad.
 }
 
-RUN_DEMOS
+
