@@ -7,8 +7,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 # set of required *compiled* boost libs
 set(BOOST_LIBS_REQUIRED
-    regex
+    log
     program_options
+    regex
 )
 
 set(BOOST_LIBS_REQUIRED_TARGETS ${BOOST_LIBS_REQUIRED})
