@@ -42,6 +42,7 @@ foreach(src_ ${SRC})
             continue()
         endif()
         list(APPEND target_libs_ ${BOOST_LIBS_REQUIRED_TARGETS})
+        list(APPEND target_libs_ dl)
     endif()
 
     add_executable(${name_} ${src_})
