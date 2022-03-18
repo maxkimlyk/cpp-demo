@@ -68,10 +68,16 @@ struct is_dataset<random_numbers> : boost::mpl::true_
 };
 } // namespace boost::unit_test::data::monomorphic
 
-BOOST_DATA_TEST_CASE(random_numbers_test,
+BOOST_DATA_TEST_CASE(random_numbers_dataset,
                      random_numbers() ^
                          boost::unit_test::data::xrange(3), // using cross-product to specify the number of iterations
                      value, iter)
 {
     BOOST_TEST(value == 1);
+}
+
+const std::vector<int> kVector = {2, 3, 4};
+
+BOOST_DATA_TEST_CASE(dataset_from_vector, boost::unit_test::data::make(kVector), value) {
+  BOOST_TEST(value == 1);
 }
